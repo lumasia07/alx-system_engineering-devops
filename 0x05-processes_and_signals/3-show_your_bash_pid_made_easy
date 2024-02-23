@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+#Displays PID alond with bash without command ps
+pgrep -l bash
