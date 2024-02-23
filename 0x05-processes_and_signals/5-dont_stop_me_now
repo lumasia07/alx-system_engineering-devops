@@ -1,3 +1,4 @@
 #!/usr/bin/env bash
 #Kills process that displays infinite text
 kill "$(ps -x | pgrep -f '4-to_inifinity_and_beyond')"
+echo 'Terminated'
