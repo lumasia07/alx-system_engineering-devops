@@ -1,0 +1,6 @@
+# Configures a server to connect a user without a password
+Host *
+	PasswordAuthentication no
+
+Host 100.27.12.248
+	IdentifyFile ~/.ssh/school
