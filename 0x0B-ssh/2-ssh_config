@@ -2,5 +2,5 @@
 Host *
 	PasswordAuthentication no
 
-Host 100.27.12.248
+Host 18.210.20.253
 	IdentifyFile ~/.ssh/school
