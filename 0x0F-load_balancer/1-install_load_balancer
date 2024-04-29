@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# Installs and Configures HAProxy on lb-01
+
+sudo apt-get update
+sudo apt-get install -y haproxy
+
+sudo tee /etc/haproxy/haproxy.cfg > /dev/null <<EOF
+frontend lumasia_frontend
+    bind *:80
+    default_backend lumasia_backend
+
+backend lumasia_backend
+    balance roundrobin
+    server web-01 35.174.185.199-web-01:80 check
+    server web-02 52.4.81.70-web-02:80 check
+EOF
+
+# Manage via init
+sudo systemctl enable haproxy
+sudo systemctl start haproxy
+
+# Verify status
+sudo systemctl haproxy
