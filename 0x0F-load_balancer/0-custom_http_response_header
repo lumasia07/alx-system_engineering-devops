@@ -1,18 +1,36 @@
-sudo ufw allow 80/tcp
+#!/usr/bin/env bash
 
-# Create directory for web content and set appropriate permissions
-sudo mkdir -p /var/www/html
-sudo chmod -R 755 /var/www/html
+sudo apt-get -y update
+sudo apt-get -y install nginx
+sudo ufw allow 'Nginx HTTP'
+sudo mkdir -p /var/www/html /var/www/error
+sudo chmod -R 755 /var/www
 
-# Create index page
-echo 'Hello World!' | sudo tee /var/www/html/index.html > /dev/null
+echo 'Hello World!' | sudo tee /var/www/html/index.html >/dev/null
+echo "Ceci n'est pas une page" | sudo tee /var/www/html/404.html >/dev/null
 
-# Create custom 404 error page
-echo "Ceci n'est pas une page" | sudo tee /var/www/html/404.html > /dev/null
+server_config=$(cat <<EOF
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+    root /var/www/html;
+    index index.html index.htm index.nginx-debian.html;
+    server_name _;
+    add_header X-Served-By \$hostname;
+    location / {
+        try_files \$uri \$uri/ =404;
+    }
+    if (\$request_filename ~ redirect_me) {
+        rewrite ^ https://overapi.com permanent;
+    }
+    error_page 404 /404.html;
+    location = /404.html {
+        internal;
+    }
+}
+EOF
+)
 
-# Configure Nginx custom header and error page
-sudo sed -i '/server_name _;/a \\tadd_header X-Served-By $hostname;' /etc/nginx/sites-enabled/default
-sudo sed -i '/listen 80 default_server;/a \\terror_page 404 /404.html;\n\tlocation = /404.html {\n\t\troot /var/www/html;\n\t\tinternal;\n\t}' /etc/nginx/sites-enabled/default
+echo "$server_config" | sudo tee /etc/nginx/sites-enabled/default >/dev/null
 
-# Restart Nginx to apply changes
-sudo systemctl restart nginx
+sudo service nginx restart
