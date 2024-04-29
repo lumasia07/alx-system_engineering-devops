@@ -1,0 +1,18 @@
+sudo ufw allow 80/tcp
+
+# Create directory for web content and set appropriate permissions
+sudo mkdir -p /var/www/html
+sudo chmod -R 755 /var/www/html
+
+# Create index page
+echo 'Hello World!' | sudo tee /var/www/html/index.html > /dev/null
+
+# Create custom 404 error page
+echo "Ceci n'est pas une page" | sudo tee /var/www/html/404.html > /dev/null
+
+# Configure Nginx custom header and error page
+sudo sed -i '/server_name _;/a \\tadd_header X-Served-By $hostname;' /etc/nginx/sites-enabled/default
+sudo sed -i '/listen 80 default_server;/a \\terror_page 404 /404.html;\n\tlocation = /404.html {\n\t\troot /var/www/html;\n\t\tinternal;\n\t}' /etc/nginx/sites-enabled/default
+
+# Restart Nginx to apply changes
+sudo systemctl restart nginx
