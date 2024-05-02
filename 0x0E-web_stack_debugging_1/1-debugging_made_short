@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# Debugging a not running
+set -e
+sed -i 's/8080/80/g' /etc/nginx/sites-enabled/default
+systemcl restart nginx
+
