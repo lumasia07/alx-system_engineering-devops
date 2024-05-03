@@ -3,16 +3,16 @@
 
 dns_config () {
 	#Query DNS and display subdomain info
-	s=$(dig "$1"."$2" | grep -A1 'ANSWER SECTION:' | TR '\t' '\n' | tail -2 | tr '\n' ' ')
+	s=$(dig "$1"."$2" | grep -A1 'ANSWER SECTION:' | tr '\t' '\n' | tail -2 | tr '\n' ' ')
 	echo "$2 $s" | awk '{print "The subdomain " $1 " is a " $2 " record and points to " $3}'
 }
 
 # Checks if args are provided
 if [ "$#" == 1 ]; then
 	dns_config "$1" "www"
-	dns_config "$2" "lb-01"
-	dns_config "$3" "web-01"
-	dns_config "$4" "web-02"
+	dns_config "$1" "lb-01"
+	dns_config "$1" "web-01"
+	dns_config "$1" "web-02"
 elif [ "$#" == 2 ]; then
 	dns_config "$1" "$2"
 fi
