@@ -1,7 +1,18 @@
 #!/usr/bin/env bash
 # Run Nginx as user
-sed -i 's/user\s*nginx;/user nginx;/' /etc/nginx/nginx.conf
-sed -i 's/listen\s*80;/listen 8080;/' /etc/nginx/sites-available/default
+#!/usr/bin/env bash
+
+# Update Nginx configuration to run as nginx user and listen on port 8080
+sed -i "s/#user www-data/user nginx/" /etc/nginx/nginx.conf
+sed -i "s/listen\s*80;/listen 8080;/g" /etc/nginx/sites-available/default
+
+# Set correct permissions for Nginx configuration file
 chmod 644 /etc/nginx/nginx.conf
-pkill apache2
-sudo -u nginx nginx
+
+# Stop Apache2 if running (assuming Apache2 is installed and running)
+if pgrep apache2 >/dev/null; then
+    pkill apache2
+fi
+
+# Start Nginx service as the nginx user
+sudo -u nginx service nginx start
