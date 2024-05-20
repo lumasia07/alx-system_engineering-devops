@@ -14,4 +14,4 @@ if __name__ == "__main__":
         user.get("name"), len(completed), len(todos)))
 
     for finished in completed:
-        print("\t {}".format(finished)) 
+        print("\t {}".format(finished))
