@@ -13,11 +13,11 @@ def top_ten(subreddit):
         hot_data = top_data.get('data').get('children')
 
         if 'error' in top_data:
-            print(None)
+            print('None')
             return
 
         for hots in hot_data:
             print(hots.get('data').get('title'))
 
     except Exception:
-        print(None)
+        print('None')
