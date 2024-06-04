@@ -19,5 +19,5 @@ def number_of_subscribers(subreddit):
 
         return data['data']['subscribers']
 
-    except Exception as no:
-        print("Error encountered: {}".format(no))
+    except Exception:
+        return 0
