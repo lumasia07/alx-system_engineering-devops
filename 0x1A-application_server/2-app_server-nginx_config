@@ -1,30 +1,33 @@
+# Config file
 server {
-    listen 80 default_server;
-    listen [::]:80 default_server;
+	listen 80 default_server;
+	listen [::]:80 ipv6only=on default_server;
+	server_name localhost;
 
-    root /var/www/html;
-    index index.html index.htm index.nginx-debian.html;
+	root /var/www/html;
 
-    server_name 35.174.185.199;
+	location /hbnb_static/ {
+		alias /data/web_static/current/;
+		autoindex off;
+	}
 
-    location / {
-        try_files $uri $uri/ =404;
-    }
+	index index.html index.htm index.nginx-debian.html;
+	rewrite ^/redirect_me https://github.com/lumasia07 permanent;
 
-    location /airbnb-onepage/ {
-        proxy_pass http://127.0.0.1:5000/airbnb-onepage/;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
+	error_page 404 /404.html;
 
-    if ($request_filename ~* redirect_me) {
-        rewrite ^ https://overapi.com permanent;
-    }
+	location = /404.html {
+		root /usr/share/nginx/html;
+		internal;
+	}
 
-    error_page 404 /404.html;
-    location = /404.html {
-        internal;
-    }
+	location /airbnb-onepage/ {
+		include proxy_params;
+                proxy_pass http://0.0.0.0:5000/airbnb-onepage/;
+        }
+
+	location / {
+		try_files $uri $uri/ =404;
+	}
+
 }
