@@ -1,5 +1,3 @@
-# Default server configuration
-
 server {
     listen 80 default_server;
     listen [::]:80 default_server;
@@ -7,28 +5,11 @@ server {
     root /var/www/html;
     index index.html index.htm index.nginx-debian.html;
 
-    server_name _;
-
-    add_header X-Served-By $hostname;
+    server_name 35.174.185.199;
 
     location / {
         try_files $uri $uri/ =404;
     }
-
-    if ($request_filename ~ redirect_me) {
-        rewrite ^ https://overapi.com permanent;
-    }
-
-    error_page 404 /404.html;
-    location = /404.html {
-        internal;
-    }
-}
-
-# Server block for AirBnB OnePage
-server {
-    listen 80;
-    server_name 35.174.185.199;
 
     location /airbnb-onepage/ {
         proxy_pass http://127.0.0.1:5000;
@@ -36,5 +17,14 @@ server {
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    if ($request_filename ~* redirect_me) {
+        rewrite ^ https://overapi.com permanent;
+    }
+
+    error_page 404 /404.html;
+    location = /404.html {
+        internal;
     }
 }
